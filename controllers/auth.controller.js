@@ -9,6 +9,7 @@ authController.login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await UserEntity.findOne({ username });
+    if (!user.password) res.status(401).send();
     const passwordComparation = await bcrypt.compare(password, user.password);
 
     if (user && passwordComparation) {
