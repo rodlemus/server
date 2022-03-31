@@ -35,7 +35,7 @@ class Server {
 
   startDatabase() {
     mongoose.connect(databaseuri).catch(console.log);
-    initDatabaseRecords();
+    // initDatabaseRecords();
   }
 }
 
