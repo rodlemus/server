@@ -59,8 +59,11 @@ productsController.updateProductById = async (req, res) => {
         "./uploads/" + imageName
       );
       console.log('IMAGE RESPONSE =>',imageResponse)
-      ProductEntity.findByIdAndUpdate(id, { productImage: imageResponse.url,...req.body });
-            res.status(204).send({message:'product updated ok'});
+      const image = {productImage: imageResponse.url};
+      const productDataToPatch = {...image,...req.body};
+      console.log(productDataToPatch)
+      ProductEntity.findByIdAndUpdate(id, { productDataToPatch});
+            res.status(204).send({data:'product updated ok'});
     } else {
       await ProductEntity.findByIdAndUpdate(id, { ...req.body });
       res.status(204).send({
