@@ -40,10 +40,9 @@ productsController.saveProduct = async (req, res) => {
 productsController.updateProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(req.files,req.body)
     let productImage = req.files.productImage;
-    console.log(productImage)
     if (productImage) {
+      console.log('ENTRA =>')
       const fileExtension = productImage.name.substr(
         productImage.name.length - 3
       );
@@ -54,12 +53,14 @@ productsController.updateProductById = async (req, res) => {
 
       const imageName = new Date().getTime() + "." + fileExtension;
 
+      console.log('Name to create=>', imageName)
       await productImage.mv("./uploads/" + imageName);
       const imageResponse = await cloudinary.uploader.upload(
         "./uploads/" + imageName
       );
+      console.log('IMAGE RESPONSE =>',imageResponse)
       ProductEntity.findByIdAndUpdate(id, { productImage: imageResponse.url,...req.body });
-      res.status(204).send();
+            res.status(204).send({message:'product updated ok'});
     } else {
       await ProductEntity.findByIdAndUpdate(id, { ...req.body });
       res.status(204).send({
