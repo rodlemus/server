@@ -40,6 +40,7 @@ productsController.saveProduct = async (req, res) => {
 productsController.updateProductById = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(req.files,req.body)
     let productImage = req.files.productImage;
     console.log(productImage)
     if (productImage) {
