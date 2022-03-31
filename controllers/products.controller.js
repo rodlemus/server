@@ -75,12 +75,28 @@ productsController.getProductsByCategory = async (req, res) => {
     const limit = req.query.limit || 15;
     const skip = req.query.skip || 0;
     const sort = req.query.sort || "asc";
-    const products = await ProductEntity.find({ category: categoryId })
-      .sort(sort)
-      .limit(limit)
-      .populate("category")
-      .skip(skip);
-    res.status(200).send({ data: products });
+
+    if (!categoryId) {
+      ProductEntity.find({})
+        .sort(sort)
+        .limit(limit)
+        .populate("category")
+        .skip(skip)
+        .exec((err, category) => {
+          if (err) throw new Error("error populate");
+          res.status(200).send({ data: category });
+        });
+    } else {
+      ProductEntity.find({ category: categoryId })
+        .sort(sort)
+        .limit(limit)
+        .populate("category")
+        .skip(skip)
+        .exec((err, category) => {
+          if (err) throw new Error("error populate");
+          res.status(200).send({ data: category });
+        });
+    }
   } catch (error) {
     res.status(500).send();
   }
@@ -92,15 +108,17 @@ productsController.getProductsBySearch = async (req, res) => {
     const limit = req.query.limit || 15;
     const skip = req.query.skip || 0;
     const sort = req.query.sort || "asc";
-    const products = await ProductEntity.find({
+    ProductEntity.find({
       productName: { $regex: `^${productName}` },
     })
       .sort(sort)
       .limit(limit)
       .populate("category")
       .skip(skip)
-      .exec();
-    res.status(200).send({ data: products });
+      .exec((err, category) => {
+        if (err) throw new Error("error populate");
+        res.status(200).send({ data: category });
+      });
   } catch (error) {
     res.status(500).send();
   }

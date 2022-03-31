@@ -11,7 +11,7 @@ const initDatabaseRecords = require("./utils/initDatabaseRecords");
 
 class Server {
   app = express();
-  serverPort = process.env.PORT;
+  serverPort = process.env.PORT || 5000;
   configServer() {
     this.app.use(fileUpload({ createParentPath: true }));
     this.app.use(cors({ origin: true, credentials: true }));
