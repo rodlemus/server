@@ -57,7 +57,7 @@ productsController.updateProductById = async (req, res) => {
       const imageResponse = await cloudinary.uploader.upload(
         "./uploads/" + imageName
       );
-      ProductEntity.findByIdAndUpdate(id, { productImage: imageResponse.url });
+      ProductEntity.findByIdAndUpdate(id, { productImage: imageResponse.url,...req.body });
     } else {
       await ProductEntity.findByIdAndUpdate(id, { ...req.body });
       res.status(204).send({
