@@ -40,10 +40,30 @@ productsController.saveProduct = async (req, res) => {
 productsController.updateProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    await ProductEntity.findByIdAndUpdate(id, { ...req.body });
-    res.status(204).send({
-      message: "product updated",
-    });
+    let productImage = req.files.productImage;
+    console.log(productImage)
+    if (productImage) {
+      const fileExtension = productImage.name.substr(
+        productImage.name.length - 3
+      );
+
+      if (fileExtension !== "png" && fileExtension !== "jpg") {
+        throw new Error("Wrong file type");
+      }
+
+      const imageName = new Date().getTime() + "." + fileExtension;
+
+      await productImage.mv("./uploads/" + imageName);
+      const imageResponse = await cloudinary.uploader.upload(
+        "./uploads/" + imageName
+      );
+      ProductEntity.findByIdAndUpdate(id, { productImage: imageResponse.url });
+    } else {
+      await ProductEntity.findByIdAndUpdate(id, { ...req.body });
+      res.status(204).send({
+        message: "product updated",
+      });
+    }
   } catch (error) {
     res.status(500).send();
   }
