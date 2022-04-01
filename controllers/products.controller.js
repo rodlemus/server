@@ -62,9 +62,10 @@ productsController.updateProductById = async (req, res) => {
       const image = {productImage: imageResponse.url};
       const productDataToPatch = {...image,...req.body};
       console.log(productDataToPatch)
-      ProductEntity.findByIdAndUpdate(id, productDataToPatch);
+      await ProductEntity.findByIdAndUpdate(id, {...productDataToPatch});
             res.status(204).send({data:'product updated ok'});
     } else {
+      console.log('ENTRA CUANDO NO HAY IMAGEN')
       await ProductEntity.findByIdAndUpdate(id, { ...req.body });
       res.status(204).send({
         message: "product updated",
